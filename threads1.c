@@ -22,32 +22,31 @@ void* threadFunc(void* thread_data){
 
 int main()
 {
-    int x = 0;
+    int x = 0; // *Здесь одна переменная
 
     //выделяем память под массив идентификаторов потоков
 	pthread_t* threads = (pthread_t*) malloc(N * sizeof(pthread_t));
 	
     //сколько потоков - столько и переменных с потоковых данных
-	//int* x = (int*) malloc(N * sizeof(int));
+	//int* x = (int*) malloc(N * sizeof(int));  //*А нужно несколько по числу потоков
 
     for(int i = 0; i < N; i++)
     {
+	   // x[i] = 0; //*здесь должно быть обнуление x[i]
 		//запускаем поток
-		pthread_create(&(threads[i]), NULL, threadFunc, &x);
+		pthread_create(&(threads[i]), NULL, threadFunc, &x);  //*здесь должно быть x[i]
 	}
 
     	//ожидаем выполнение всех потоков
 	for(int i = 0; i < N; i++)
 		pthread_join(threads[i], NULL);
 
-    //for(int i = 0; i < N; i++)
-        //printf("%d) %d \n", i, x);
 
 
 	//освобождаем память
 	free(threads);
 	
-    //free(x);
+    //free(x); //* нужно освободить память
 
     return 0;
 }
