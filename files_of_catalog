@@ -1,0 +1,33 @@
+
+#include <stdio.h>
+#include <string.h>  
+#include <dirent.h>
+
+int main(int argc, char ** argv)  
+{
+    DIR *dp; //указатель на структуру DIR для сохранения соответствующей информации о каталоге
+    struct dirent *dent; //указатель на структуру dirent, указывает на конкретные файлы в каталоге.
+    char *dirname; //массив символов для хранения названия каталога
+
+    if (argc < 2 || argc > 4) //количество аргументов при запуске программы ограничено от 1 до 3
+    {
+        fprintf(stderr,"Error count of arguments!\n");
+        return 1;
+    }
+    for (int i =1; i < argc; i++) //цикл для перебора каталогов, указанных аргументами при запуске программы
+    {
+        dirname = argv[i]; //присваивается очередное имя каталога из входныхаргументов
+        if( (dp = opendir(dirname)) == NULL) //открывает файловый каталог, возвращает указатель на структуру DIR
+        {
+            printf("Open dir: %s error\n", dirname); //в случае ошибки открытия
+            return 1;
+        }
+        printf("%d) Requested dir: %s\n", i, dirname); 
+        while(dent = readdir(dp)) //читает все файлы (включая каталоги) в каталоге dirname и возвращает структуру dirent
+            if((dent->d_name != ".") && (dent->d_name != "..")) //исключаем  текущий каталог (".") и каталог выше ("..")
+                if(dent->d_type != DT_DIR) //исключаем также вложенные каталоги
+                    printf("%s\n", dent->d_name); //выводим на печать имена файлов построчно
+        closedir(dp); //закрываем файловый каталог
+    }
+    return 0; 
+}
